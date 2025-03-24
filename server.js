@@ -67,12 +67,9 @@ app.post('/mpesa-payment', async (req, res) => {
         console.error("MPesa Payment Error:", error.response?.data || error.message);
         res.status(500).json({ message: "Payment failed", error: error.response?.data || error.message });
     }
-});
-app.get('/test-env', (req, res) => {
-    res.json({
-        consumerKey: process.env.MPESA_CONSUMER_KEY ? "Loaded" : "Not Loaded",
-        consumerSecret: process.env.MPESA_CONSUMER_SECRET ? "Loaded" : "Not Loaded"
-    });
+});require('dotenv').config();
+console.log("Loaded MPESA_CONSUMER_KEY:", process.env.MPESA_CONSUMER_KEY ? "Yes" : "No");
+
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
