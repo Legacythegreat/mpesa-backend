@@ -20,17 +20,19 @@ const PAYHERO_USERNAME = process.env.PAYHERO_USERNAME;
 const PAYHERO_PASSWORD = process.env.PAYHERO_PASSWORD;
 const PAYHERO_CHANNEL_ID = process.env.PAYHERO_CHANNEL_ID;
 const CALLBACK_URL = process.env.CALLBACK_URL || "https://bingwa-sokoni.onrender.com/mpesa/callback";
+const BUNDLE_BACKEND_URL = process.env.BUNDLE_BACKEND_URL || "https://bundle-kqde.onrender.com";
 
 console.log("Environment Variables Loaded:", {
     PAYHERO_USERNAME: PAYHERO_USERNAME ? "Yes" : "No",
     PAYHERO_PASSWORD: PAYHERO_PASSWORD ? "Yes" : "No",
     PAYHERO_CHANNEL_ID: PAYHERO_CHANNEL_ID ? "Yes" : "No",
     CALLBACK_URL: CALLBACK_URL ? "Yes" : "No",
+    BUNDLE_BACKEND_URL: BUNDLE_BACKEND_URL ? "Yes" : "No"
 });
 
 app.post('/mpesa-payment', async (req, res) => {
     try {
-        const { phoneNumber, amount } = req.body;
+        const { phoneNumber, amount, bundleId } = req.body;
         console.log("Received Payment Request:", req.body);
 
         const requestData = {
@@ -53,6 +55,13 @@ app.post('/mpesa-payment', async (req, res) => {
         });
 
         console.log("MPesa STK Push Response:", response.data);
+        
+        // If payment is successful, trigger bundle activation
+        if (response.data.success) {
+            console.log("Triggering Bundle Activation...");
+            await axios.post(`${BUNDLE_BACKEND_URL}/confirm-payment`, { phoneNumber, bundleId });
+        }
+
         res.json({ message: "MPesa payment initiated, check your phone!", data: response.data });
     } catch (error) {
         console.error("MPesa Payment Error:", error.response?.data || error.message);
