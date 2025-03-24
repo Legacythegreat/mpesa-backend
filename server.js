@@ -22,15 +22,15 @@ const TILL_NUMBER = process.env.MPESA_TILL_NUMBER;
 const CALLBACK_URL = process.env.CALLBACK_URL || "https://bingwa-sokoni.onrender.com/mpesa/callback";
 
 console.log("Environment Variables Loaded:", {
-    CONSUMER_KEY: CONSUMER_KEY ? "Yes" : "No",
-    CONSUMER_SECRET: CONSUMER_SECRET ? "Yes" : "No",
+    MPESA_CONSUMER_KEY: CONSUMER_KEY ? "Yes" : "No",
+    MPESA_CONSUMER_SECRET: CONSUMER_SECRET ? "Yes" : "No",
     TILL_NUMBER: TILL_NUMBER ? "Yes" : "No",
     CALLBACK_URL: CALLBACK_URL ? "Yes" : "No",
 });
 
 async function getAccessToken() {
     try {
-        const auth = Buffer.from(`${CONSUMER_KEY}:${CONSUMER_SECRET}`).toString('base64');
+        const auth = Buffer.from(`${MPESA_CONSUMER_KEY}:${MPESA_CONSUMER_SECRET}`).toString('base64');
         const response = await axios.get('https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
             headers: { Authorization: `Basic ${auth}` }
         });
