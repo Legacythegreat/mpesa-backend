@@ -16,8 +16,8 @@ app.use(cors({
 app.use(express.json());
 
 // Load environment variables
-const MPESA_CONSUMER_KEY = process.env.MPESA_CONSUMER_KEY;
-const MPESA_CONSUMER_SECRET = process.env.MPESA_CONSUMER_SECRET;
+const CONSUMER_KEY = process.env.MPESA_CONSUMER_KEY;
+const CONSUMER_SECRET = process.env.MPESA_CONSUMER_SECRET;
 const TILL_NUMBER = process.env.MPESA_TILL_NUMBER;
 const CALLBACK_URL = process.env.CALLBACK_URL || "https://bingwa-sokoni.onrender.com/mpesa/callback";
 
@@ -30,7 +30,7 @@ console.log("Environment Variables Loaded:", {
 
 async function getAccessToken() {
     try {
-        const auth = Buffer.from(`${MPESA_CONSUMER_KEY}:${MPESA_CONSUMER_SECRET}`).toString('base64');
+        const auth = Buffer.from(`${CONSUMER_KEY}:${CONSUMER_SECRET}`).toString('base64');
         const response = await axios.get('https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
             headers: { Authorization: `Basic ${auth}` }
         });
