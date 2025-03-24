@@ -16,15 +16,15 @@ app.use(cors({
 app.use(express.json());
 
 // Load PayHero credentials
-const PAYHERO_API_KEY = process.env.PAYHERO_API_KEY;
+const PAYHERO_USERNAME = process.env.PAYHERO_USERNAME;
+const PAYHERO_PASSWORD = process.env.PAYHERO_PASSWORD;
 const PAYHERO_CHANNEL_ID = process.env.PAYHERO_CHANNEL_ID;
-const TILL_NUMBER = process.env.MPESA_TILL_NUMBER;
 const CALLBACK_URL = process.env.CALLBACK_URL || "https://bingwa-sokoni.onrender.com/mpesa/callback";
 
 console.log("Environment Variables Loaded:", {
-    PAYHERO_API_KEY: PAYHERO_API_KEY ? "Yes" : "No",
+    PAYHERO_USERNAME: PAYHERO_USERNAME ? "Yes" : "No",
+    PAYHERO_PASSWORD: PAYHERO_PASSWORD ? "Yes" : "No",
     PAYHERO_CHANNEL_ID: PAYHERO_CHANNEL_ID ? "Yes" : "No",
-    TILL_NUMBER: TILL_NUMBER ? "Yes" : "No",
     CALLBACK_URL: CALLBACK_URL ? "Yes" : "No",
 });
 
@@ -34,17 +34,21 @@ app.post('/mpesa-payment', async (req, res) => {
         console.log("Received Payment Request:", req.body);
 
         const requestData = {
-            api_key: PAYHERO_API_KEY,
-            channel_id: PAYHERO_CHANNEL_ID,
-            till_number: TILL_NUMBER,
-            phone_number: phoneNumber,
             amount: amount,
+            phone_number: phoneNumber,
+            channel_id: parseInt(PAYHERO_CHANNEL_ID, 10),
+            provider: 'm-pesa',
+            external_reference: 'INV-' + Date.now().toString(),
             callback_url: CALLBACK_URL
         };
 
         console.log("Sending MPesa STK Push Request:", requestData);
 
-        const response = await axios.post('https://api.payhero.co.ke/v1/stkpush', requestData, {
+        const response = await axios.post('https://backend.payhero.co.ke/api/v2/payments', requestData, {
+            auth: {
+                username: PAYHERO_USERNAME,
+                password: PAYHERO_PASSWORD
+            },
             headers: { "Content-Type": "application/json" }
         });
 
