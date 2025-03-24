@@ -16,8 +16,8 @@ app.use(cors({
 app.use(express.json());
 
 // Load environment variables
-const CONSUMER_KEY = process.env.MPESA_CONSUMER_KEY;
-const CONSUMER_SECRET = process.env.MPESA_CONSUMER_SECRET;
+const MPESA_CONSUMER_KEY = process.env.MPESA_CONSUMER_KEY;
+const MPESA_CONSUMER_SECRET = process.env.MPESA_CONSUMER_SECRET;
 const TILL_NUMBER = process.env.MPESA_TILL_NUMBER;
 const CALLBACK_URL = process.env.CALLBACK_URL || "https://bingwa-sokoni.onrender.com/mpesa/callback";
 
