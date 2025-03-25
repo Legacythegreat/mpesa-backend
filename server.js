@@ -69,7 +69,8 @@ app.post('/mpesa-payment', async (req, res) => {
     res.status(500).json({ 
         message: "Payment failed", 
         error: error.response?.data || error.message 
-    });
-});
+        });
+    }
+}); 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
