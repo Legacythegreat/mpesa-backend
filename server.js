@@ -57,15 +57,19 @@ app.post('/mpesa-payment', async (req, res) => {
         console.log("MPesa STK Push Response:", response.data);
         
         // If payment is successful, trigger bundle activation
-        if (response.data.success) {
-            console.log("Triggering Bundle Activation...");
-            await axios.post(`${BUNDLE_BACKEND_URL}/confirm-payment`, { phoneNumber, bundleId });
-        }
-
+       if (response.data && response.data.success) {
+        console.log("Triggering Bundle Activation...");
+        await axios.post(`${BUNDLE_BACKEND_URL}/confirm-payment`, { phoneNumber, bundleId });
         res.json({ message: "MPesa payment initiated, check your phone!", data: response.data });
+    } else {
+        res.status(400).json({ message: "Unexpected response from MPesa, please try again.", data: response.data });
+    }
 } catch (error) {
     console.error("MPesa Payment Error:", error.response?.data || error.message);
-    res.status(500).json({ message: "Payment failed", error: error.response?.data || error.message });
+    res.status(500).json({ 
+        message: "Payment failed", 
+        error: error.response?.data || error.message 
+    });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
