@@ -63,10 +63,13 @@ app.post('/mpesa-payment', async (req, res) => {
         }
 
         res.json({ message: "MPesa payment initiated, check your phone!", data: response.data });
-    } catch (error) {
-        console.error("MPesa Payment Error:", error.response?.data || error.message);
-        res.status(500).json({ message: "Payment failed", error: error.response?.data || error.message });
+    } else {
+        res.status(400).json({ message: "Unexpected response from MPesa, please try again." });
     }
+} catch (error) {
+    console.error("MPesa Payment Error:", error.response?.data || error.message);
+    res.status(500).json({ message: "Payment failed", error: error.response?.data || error.message });
+}
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
