@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 
 // Enable CORS for your frontend
 app.use(cors({
-    origin: "https://bingwa-sokoni.vercel.app",
+    origin: "https://kishbingwasokoni.site",
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
