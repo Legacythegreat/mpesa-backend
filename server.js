@@ -56,23 +56,38 @@ app.post('/mpesa-payment', async (req, res) => {
 
         console.log("MPesa STK Push Response:", response.data);
         
-        // If payment initiation is successful, respond to client
+        // Check if the STK push was successfully initiated
         if (response.data && response.data.success) {
-            console.log("Payment initiated successfully, waiting for callback...");
+            console.log("STK push initiated successfully");
             res.json({ 
-                message: "MPesa payment initiated, check your phone!", 
+                success: true,
+                message: "MPesa payment request sent. Please check your phone to complete the payment.", 
                 data: response.data 
             });
         } else {
+            console.log("STK push initiation failed");
             res.status(400).json({ 
-                message: "Failed to initiate MPesa payment", 
+                success: false,
+                message: "Failed to initiate payment. Please try again.", 
                 data: response.data 
             });
         }
     } catch (error) {
         console.error("MPesa Payment Error:", error.response?.data || error.message);
+        
+        // Provide more specific error messages based on the error
+        let errorMessage = "Payment initiation failed";
+        if (error.response?.status === 401) {
+            errorMessage = "Authentication failed. Please check your PayHero credentials.";
+        } else if (error.response?.status === 400) {
+            errorMessage = "Invalid payment request. Please check the provided details.";
+        } else if (error.code === 'ECONNREFUSED') {
+            errorMessage = "Payment service temporarily unavailable. Please try again later.";
+        }
+        
         res.status(500).json({ 
-            message: "Payment failed", 
+            success: false,
+            message: errorMessage, 
             error: error.response?.data || error.message 
         });
     }
